@@ -1,0 +1,64 @@
+{
+  "name": "express-starter",
+  "env": {
+    "NODE_ENV": {
+      "description": "Environment where the application will run",
+      "value": "production"
+    },
+    "CORS_ALLOWED_ORIGIN": {
+      "description": "Allowed cors origins separated with comma",
+      "value": "http://localhost:8000"
+    },
+    "SENTRY_DSN": {
+      "description": "Only required if NODE_ENV is equal to production",
+      "required": false
+    },
+    "JWT_SECRET_KEY": {
+      "description": "Secret key for JWT",
+      "generator": "secret"
+    },
+    "DB_HOST": {
+      "description": "PostgreSQL database host"
+    },
+    "DB_PORT": {
+      "description": "PostgreSQL database port",
+      "value": "5432"
+    },
+    "DB_USER": {
+      "description": "PostgreSQL database user"
+    },
+    "DB_PASSWORD": {
+      "description": "PostgreSQL database user password"
+    },
+    "DB_NAME": {
+      "description": "PostgreSQL database name"
+    },
+    "REDIS_URI": {
+      "description": "PostgreSQL database name",
+      "value": "redis://username:password@host:6379"
+    },
+    "SMTP_HOST": {
+      "description": "Only required if NODE_ENV is equal to production",
+      "required": false
+    },
+    "SMTP_PORT": {
+      "description": "Only required if NODE_ENV is equal to production",
+      "required": false
+    },
+    "SMTP_USER": {
+      "description": "Only required if NODE_ENV is equal to production",
+      "required": false
+    },
+    "SMTP_PASSWORD": {
+      "description": "Only required if NODE_ENV is equal to production",
+      "required": false
+    },
+    "DEFAULT_MAIL_SENDER": {
+      "description": "Default mail sander profile",
+      "value": "Express Starter <mail@example.com>"
+    }
+  },
+  "options": {
+    "allow-unauthenticated": true
+  }
+}
