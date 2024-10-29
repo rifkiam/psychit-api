@@ -20,6 +20,12 @@
   "tags": [
     {
       "name": "auth"
+    },
+    {
+      "name": "chat"
+    },
+    {
+      "name": "article"
     }
   ],
   "paths": {
@@ -281,6 +287,378 @@
         },
         "tags": ["auth"]
       }
+    },
+    "/chat": {
+      "get": {
+        "summary": "Get all chat history for the authenticated user",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of chats",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Chat"
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "tags": ["chat"]
+      },
+      "post": {
+        "summary": "Handle chat request",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": ["model", "messages"],
+              "properties": {
+                "model": {
+                  "type": "string"
+                },
+                "messages": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Message"
+                  }
+                },
+                "stream": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The chat response",
+            "schema": {
+              "$ref": "#/definitions/Chat"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "tags": ["chat"]
+      }
+    },
+    "/chat/{id}": {
+      "get": {
+        "summary": "Get chat history by chat ID for the authenticated user",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "integer",
+            "required": true,
+            "description": "The chat ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The chat data",
+            "schema": {
+              "$ref": "#/definitions/Chat"
+            }
+          },
+          "404": {
+            "description": "Article not found",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "tags": ["chat"]
+      },
+      "delete": {
+        "summary": "Delete chat history by chat ID for the authenticated user",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "integer",
+            "required": true,
+            "description": "The chat ID"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "404": {
+            "description": "Chat not found",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "tags": ["chat"]
+      }
+    },
+    "/article": {
+      "get": {
+        "summary": "Get article by ID for the authenticated user",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The chat array data",
+            "schema": {
+              "$ref": "#/definitions/ArrayArticleSuccessResponse"
+            }
+          },
+          "403": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "404": {
+            "description": "Chat not found",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "tags": ["article"]
+      },
+      "post": {
+        "summary": "Insert new article",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": ["title", "content", "author"],
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "content": {
+                  "type": "string"
+                },
+                "author": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The chat data",
+            "schema": {
+              "$ref": "#/definitions/ArticleSuccessResponse"
+            }
+          },
+          "403": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "404": {
+            "description": "Chat not found",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "tags": ["article"]
+      }
+    },
+    "/article/:id": {
+      "get": {
+        "summary": "Get article by ID for the authenticated user",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "integer",
+            "required": true,
+            "description": "The article ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The chat data",
+            "schema": {
+              "$ref": "#/definitions/ArticleSuccessResponse"
+            }
+          },
+          "404": {
+            "description": "Chat not found",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "tags": ["article"]
+      },
+      "delete": {
+        "summary": "Delete article by ID for the authenticated user",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "integer",
+            "required": true,
+            "description": "The chat ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful delete"
+          },
+          "403": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "tags": ["article"]
+      },
+      "patch": {
+        "summary": "Update article by ID for the authenticated user",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "integer",
+            "required": true,
+            "description": "The article ID"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": ["title", "content", "author"],
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "content": {
+                  "type": "string"
+                },
+                "author": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful update",
+            "schema": {
+              "$ref": "#/definitions/ArticleSuccessResponse"
+            }
+          },
+          "403": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "tags": ["article"]
+      }
     }
   },
   "definitions": {
@@ -381,6 +759,166 @@
         "content": {
           "type": "string",
           "description": "The content of the message"
+        }
+      }
+    },
+    "Chat": {
+      "type": "object",
+      "required": ["userId", "model", "messages"],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "The ID of the chat"
+        },
+        "userId": {
+          "type": "integer",
+          "description": "The ID of the user"
+        },
+        "model": {
+          "type": "string",
+          "description": "The model used for the chat"
+        },
+        "messages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Message"
+          }
+        },
+        "stream": {
+          "type": "boolean",
+          "description": "Whether the chat is streamed"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "deletedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "Article": {
+      "type": "object",
+      "required": ["userId", "model", "messages"],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "The ID of the article"
+        },
+        "title": {
+          "type": "string",
+          "description": "The title of the article"
+        },
+        "content": {
+          "type": "string",
+          "description": "The content of the article"
+        },
+        "author": {
+          "type": "string",
+          "description": "The author of the article"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "ArticleSuccessResponse": {
+      "type": "object",
+      "required": ["title", "content", "author"],
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": true
+        },
+        "message": {
+          "type": "string",
+          "example": "* berhasil."
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "description": "The ID of the article"
+            },
+            "title": {
+              "type": "string",
+              "description": "The title of the article"
+            },
+            "content": {
+              "type": "string",
+              "description": "The content of the article"
+            },
+            "author": {
+              "type": "string",
+              "description": "The author of the article"
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "updatedAt": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        }
+      }
+    },
+    "ArrayArticleSuccessResponse": {
+      "type": "object",
+      "required": ["success", "message", "data"],
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": true
+        },
+        "message": {
+          "type": "string",
+          "example": "* berhasil."
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "description": "The ID of the article"
+              },
+              "title": {
+                "type": "string",
+                "description": "The title of the article"
+              },
+              "content": {
+                "type": "string",
+                "description": "The content of the article"
+              },
+              "author": {
+                "type": "string",
+                "description": "The author of the article"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            },
+            "required": ["id", "title", "content", "author"]
+          }
         }
       }
     }

@@ -13,13 +13,13 @@ export const login = async (req, res, next) => {
     // Find user by email address
     const user = await db.models.user.findOne({ where: { email } });
     if (!user) {
-      return next(createError(400, 'There is no user with this email address!'));
+      return next(createError(400, 'Tidak ada user dengan email tersebut.'));
     }
 
     // Check user password
     const isValidPassword = await user.validatePassword(password);
     if (!isValidPassword) {
-      return next(createError(400, 'Incorrect password!'));
+      return next(createError(400, 'Password salah!'));
     }
 
     // Generate and return token
@@ -37,6 +37,10 @@ export const login = async (req, res, next) => {
  */
 export const register = async (req, res, next) => {
   try {
+    // Check for existing user with the same email
+    const existing = await db.models.user.findOne({ where: { email: req.body.email } });
+    if (existing) return next(createError(400, 'Sudah ada user dengan email tersebut.'));
+
     // Create user
     const user = await db.models.user
       .create(req.body, {

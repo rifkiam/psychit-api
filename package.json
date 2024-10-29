@@ -18,7 +18,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "NODE_ENV=test mocha --require @babel/register --exit",
-    "db:migrate": "npx sequelize-cli db:migrate"
+    "db:migrate": "npx sequelize-cli db:migrate",
+    "db:seed": "npx sequelize-cli db:seed"
   },
   "dependencies": {
     "@sentry/node": "^7.2.3",
@@ -43,7 +44,8 @@
     "redis": "^4.0.0",
     "redoc-cli": "^0.13.21",
     "sequelize": "^6.7.0",
-    "swagger-ui-express": "^4.1.6"
+    "swagger-ui-express": "^4.1.6",
+    "uuid": "^11.0.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.16.7",

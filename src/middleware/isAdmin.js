@@ -1,9 +1,8 @@
 import createError from 'http-errors';
 
 export default async function (req, res, next) {
-  console.log('req')
-  if (!req.user) {
-    const error = createError(403, 'Not authenticated!');
+  if (req.user.dataValues.email !== 'admin@mail.com') {
+    const error = createError(403, 'You are not an admin!');
     return next(error);
   }
   return next();

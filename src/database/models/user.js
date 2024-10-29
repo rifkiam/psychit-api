@@ -62,7 +62,7 @@ export default function (sequelize) {
     // Send welcome message to user.
     const payload = {
       subject: 'Welcome to Express Starter',
-      html: 'Your account is created successfully!',
+      html: 'Your account has been created successfully!',
     };
     instance.sendMail(payload);
   });
