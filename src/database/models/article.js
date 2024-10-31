@@ -16,6 +16,10 @@ export default function (sequelize) {
       allowNull: false,
       type: DataTypes.STRING(50),
     },
+    filePath: {
+      allowNull: true,
+      type: DataTypes.STRING(255),
+    },
     createdAt: {
       allowNull: false,
       type: DataTypes.DATE,

@@ -7,6 +7,7 @@ import compression from 'compression';
 import createError from 'http-errors';
 import cookieParser from 'cookie-parser';
 import * as Sentry from '@sentry/node';
+import path from 'path'
 
 import * as configs from '@/config';
 import { authenticationMiddleware, sentryMiddleware } from '@/middleware';
@@ -15,17 +16,19 @@ const { NODE_ENV } = process.env;
 
 const app = express();
 
+
 // Initialize sentry
 if (NODE_ENV !== 'development') {
   // configuration
   Sentry.init(configs.sentryConfig(app));
-
+  
   // handlers
   app.use(Sentry.Handlers.requestHandler());
   app.use(Sentry.Handlers.tracingHandler());
 }
 
 // Required middleware list
+app.use('/static', express.static('uploads'))
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

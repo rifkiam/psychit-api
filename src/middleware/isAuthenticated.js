@@ -1,7 +1,6 @@
 import createError from 'http-errors';
 
 export default async function (req, res, next) {
-  console.log('req')
   if (!req.user) {
     const error = createError(403, 'Not authenticated!');
     return next(error);
