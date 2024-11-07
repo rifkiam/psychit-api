@@ -288,50 +288,6 @@
         "tags": ["auth"]
       }
     },
-    "/chat/start": {
-      "post": {
-        "summary": "Start a new chat session",
-        "tags": ["chat"],
-        "security": [
-          { "bearer": [] }
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "model": { "type": "string", "description": "The model to use for the chat" },
-                "stream": { "type": "boolean", "description": "Whether the response should be streamed", "default": false }
-              },
-              "required": ["model"]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Chat session started",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": { "type": "string" },
-                "sessionId": { "type": "string" }
-              }
-            }
-          },
-          "400": {
-            "description": "Model is required",
-            "schema": { "$ref": "#/definitions/ErrorResponse" }
-          },
-          "500": {
-            "description": "Failed to start chat session",
-            "schema": { "$ref": "#/definitions/ErrorResponse" }
-          }
-        }
-      }
-    },
     "/chat": {
       "get": {
         "summary": "Get all chat history for the authenticated user",
@@ -376,9 +332,6 @@
               "required": ["model", "messages"],
               "properties": {
                 "model": {
-                  "type": "string"
-                },
-                "sessionId": {
                   "type": "string"
                 },
                 "messages": {

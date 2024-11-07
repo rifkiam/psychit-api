@@ -9,6 +9,10 @@ module.exports = {
         autoIncrement: true,
         allowNull: false,
       },
+      sessionId: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       model: {
         type: Sequelize.STRING(100),
         allowNull: false,

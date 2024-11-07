@@ -4,8 +4,12 @@ export default function (sequelize) {
   class Chat extends Model {}
 
   Chat.init({
-userId: {
+    userId: {
       type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    sessionId: {
+      type: DataTypes.STRING, // Add this to track session ID
       allowNull: false,
     },
     model: {
@@ -15,6 +19,7 @@ userId: {
     messages: {
       type: DataTypes.JSON,
       allowNull: false,
+      defaultValue: [], // Initialize as an empty array to store messages
     },
     stream: {
       type: DataTypes.BOOLEAN,
@@ -39,8 +44,8 @@ userId: {
     modelName: 'Chat',
     tableName: 'chats',
     sequelize,
-    paranoid: true,
-    timestamps: true,
+    paranoid: true,  // Enables soft deletion
+    timestamps: true, // Auto-sets createdAt and updatedAt fields
   });
 
   return Chat;
