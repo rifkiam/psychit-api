@@ -28,7 +28,10 @@ export const startChatSession = async (req, res, next) => {
     // search for the latest chat session with empty array '[]' to populate / preventing recreating blank arrays
     let latestEmpChatSession = await db.models.Chat.findOne({
       order: [['createdAt', 'DESC']], 
-      where: Sequelize.literal(`messages::jsonb = '[]'::jsonb`) 
+      where: {
+        userId,  // add userId condition
+        [Sequelize.Op.and]: Sequelize.literal(`messages::jsonb = '[]'::jsonb`)  // JSON condition for empty array
+      }
     })
     if (!latestEmpChatSession || latestEmpChatSession.messages.length != 0) {
       // Create a new session with a unique sessionId
