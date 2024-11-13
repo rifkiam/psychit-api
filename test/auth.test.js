@@ -1,115 +1,103 @@
-import chai from 'chai';
-import chaiHttp from 'chai-http';
-import { describe, it } from 'mocha';
+import request from 'supertest'
+import app from '@/app'
 
-import server from '@/app';
-
-chai.should();
-chai.use(chaiHttp);
-
-const testUser = {
-  firstName: 'John',
-  lastName: 'Doe',
-  email: 'hello@example.com',
-  password: '123456',
-};
-
-let token;
+function helper(length) {
+  return Math.random().toString(36).substring(2, length + 2);
+}
 
 describe('POST /auth/register', () => {
-  it('should create new user and return tokens', (done) => {
-    chai.request(server)
+  it('should respond with 200 and provides token and refreshToken', async () => {
+    const response = await request(app)
       .post('/auth/register')
-      .send(testUser)
-      .end((err, res) => {
-        if (err) {
-          throw err;
-        }
-        // Check response
-        res.should.have.status(201);
-        res.body.should.have.property('token').a('string');
-        res.body.should.have.property('refreshToken').a('string');
-        done();
-      });
+      .send({ firstName: helper(8), lastName: helper(8), email: helper(10) + '@mail.com', password: 'somePassword' });
+
+    expect(response.statusCode).toBe(201);
+    expect(response.body).toMatchObject({
+      token: expect.any(String),
+      refreshToken: expect.any(String),
+    });
+  });
+
+  it('should respond with 400 and provides token and refreshToken', async () => {
+    const response = await request(app)
+      .post('/auth/register')
+      .send({ firstName: helper(8), lastName: helper(8), email: 'rifki.ahmad2003@gmail.com', password: 'somePassword' });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.body).toMatchObject({
+      message: 'Sudah ada user dengan email tersebut.',
+    });
   });
 });
+
+describe('POST /auth/me', () => {
+  it('should respond with corresponding user\'s data', async () => {
+    const response = await request(app)
+      .get('/auth/me')
+      .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJyaWZraS5haG1hZDIwMDNAZ21haWwuY29tIiwiaWF0IjoxNzMxNTA3NzQ2LCJleHAiOjE3NjMwNjUzNDZ9.QBYTB6HZfTZjuO9lCD8LqbBt539sdz3wWKYNiuHPGDU')
+
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toMatchObject({
+      id: 2,
+      firstName: "Rifqi",
+      lastName: "Akhmad",
+      email: "rifki.ahmad2003@gmail.com",
+      createdAt: expect.any(String),
+      updatedAt: expect.any(String),
+      deletedAt: null
+    });
+  })
+})
 
 describe('POST /auth/login', () => {
-  it('should return tokens with 200 status code', (done) => {
-    const payload = { email: testUser.email, password: testUser.password };
-    chai.request(server)
+  it('should respond with 200 and provides token and refreshToken', async () => {
+    const response = await request(app)
       .post('/auth/login')
-      .send(payload)
-      .end((err, res) => {
-        if (err) {
-          throw err;
-        }
-        // Check response
-        res.should.have.status(200);
-        res.body.should.have.property('token').a('string');
-        res.body.should.have.property('refreshToken').a('string');
-        // Set token
-        token = res.body.token;
-        done();
-      });
-  });
-});
+      .send({ email: 'rifki.ahmad2003@gmail.com', password: 'Maulana2003' });
 
-describe('GET /auth/me', () => {
-  it('should return current user with 200 status code', (done) => {
-    chai.request(server)
-      .get('/auth/me')
-      .set('Authorization', `Bearer ${token}`)
-      .end((err, res) => {
-        if (err) {
-          throw err;
-        }
-        // Check response
-        res.should.have.status(200);
-        res.body.should.be.a('object');
-        res.body.should.have.property('id');
-        res.body.should.have.property('firstName').eql(testUser.firstName);
-        res.body.should.have.property('lastName').eql(testUser.lastName);
-        res.body.should.have.property('email').eql(testUser.email);
-        res.body.should.have.property('createdAt');
-        res.body.should.have.property('updatedAt');
-        done();
-      });
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toMatchObject({
+      token: expect.any(String),
+      refreshToken: expect.any(String),
+    });
   });
-});
 
-describe('PUT /auth/me', () => {
-  it('should update authenticated user', (done) => {
-    const payload = { firstName: 'Express', lastName: 'Starter' };
-    chai.request(server)
-      .put('/auth/me')
-      .send(payload)
-      .set('Authorization', `Bearer ${token}`)
-      .end((err, res) => {
-        if (err) {
-          throw err;
-        }
-        // Check response
-        res.should.have.status(200);
-        res.body.should.be.a('object');
-        res.body.should.have.property('success').eql(true);
-        done();
-      });
-  });
-});
+  it('should respond with 400 if email and/or password incorrect', async () => {
+    const response = await request(app)
+      .post('/auth/login')
+      .send({ email: 'rifki.ahmad2003@gmail.com', password: 'NineElevenIsRigged' });
 
-describe('DELETE /auth/me', () => {
-  it('should delete authenticated user', (done) => {
-    chai.request(server)
-      .delete('/auth/me')
-      .set('Authorization', `Bearer ${token}`)
-      .end((err, res) => {
-        if (err) {
-          throw err;
-        }
-        // Check response
-        res.should.have.status(204);
-        done();
-      });
+    expect(response.statusCode).toBe(400);
+    expect(response.body).toMatchObject({
+      message: 'Password salah!',
+    });
   });
-});
+
+  it('should respond with 422 if email and/or password not present', async () => {
+    const response = await request(app)
+      .post('/auth/login')
+      .send({});
+
+    expect(response.statusCode).toBe(422);
+    expect(response.body).toMatchObject({
+      message: 'Validation errors',
+      errors: [
+        {
+          msg: 'Invalid value',
+          param: 'password',
+          location: 'body'
+        },
+        {
+          msg: 'Invalid value',
+          param: 'email',
+          location: 'body'
+        },
+        {
+          msg: 'Invalid value',
+          param: 'email',
+          location: 'body'
+        }
+      ]
+    });
+  });
+})

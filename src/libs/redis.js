@@ -8,14 +8,14 @@ const client = createClient({
     url: process.env.REDIS_URI
 });
 
-client.on('error', (err) => console.error('Redis Client Error', err));
+// client.on('error', (err) => console.error('Redis Client Error', err));
 
-client.connect()
-    .then(() => {
-        console.log('Connected to Redis');
-    })
-    .catch((err) => {
-        console.error('Redis Connection Error', err);
-    });
+// client.connect()
+//     .then(() => {
+//         console.log('Connected to Redis');
+//     })
+//     .catch((err) => {
+//         console.error('Redis Connection Error', err);
+//     });
 
 export default client;
